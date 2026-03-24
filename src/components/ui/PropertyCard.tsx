@@ -35,11 +35,18 @@ export function PropertyCard({ property, index = 0 }: PropertyCardProps) {
               className="object-cover transition-transform duration-500 group-hover:scale-105"
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
-            {property.promoted && (
-              <div className="absolute top-3 left-3 rounded-full bg-accent-600 px-3 py-1 text-xs font-medium text-white shadow-sm">
-                {t('featured.promoted')}
-              </div>
-            )}
+            <div className="absolute top-3 left-3 flex gap-1.5">
+              {property.promoted && (
+                <span className="rounded-full bg-accent-600 px-3 py-1 text-xs font-medium text-white shadow-sm">
+                  {t('featured.promoted')}
+                </span>
+              )}
+              <span className={`rounded-full px-3 py-1 text-xs font-medium text-white shadow-sm ${
+                property.listingType === 'alquiler' ? 'bg-blue-600' : 'bg-success-600'
+              }`}>
+                {t(`listingType.badge.${property.listingType}` as TranslationKey)}
+              </span>
+            </div>
             <div className="absolute top-3 right-3">
               <LegalBadge legalStatus={property.legalStatus} compact />
             </div>
@@ -104,7 +111,10 @@ export function PropertyCard({ property, index = 0 }: PropertyCardProps) {
             </div>
 
             <div className="mt-4 pt-3 border-t border-warm-100 flex items-end justify-between">
-              <p className="text-lg font-bold text-warm-900">{formatPrice(property.priceUSD, 'USD')}</p>
+              <p className="text-lg font-bold text-warm-900">
+                {formatPrice(property.priceUSD, 'USD')}
+                {property.listingType === 'alquiler' && <span className="text-xs font-normal text-warm-500">{t('listingType.perMonth')}</span>}
+              </p>
               <p className="text-xs text-warm-400">
                 {property.seller.type === 'empresa' ? t('card.company') : t('card.individual')}
               </p>

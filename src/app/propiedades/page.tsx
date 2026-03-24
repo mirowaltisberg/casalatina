@@ -18,6 +18,7 @@ function PropertyListContent() {
 
   const [filters, setFilters] = useState<PropertyFilters>(() => ({
     search: searchParams.get('search') ?? undefined,
+    listingType: (searchParams.get('listingType') as PropertyFilters['listingType']) ?? undefined,
     type: (searchParams.get('type') as PropertyFilters['type']) ?? undefined,
     department: searchParams.get('department') ?? undefined,
   }));
@@ -26,6 +27,7 @@ function PropertyListContent() {
     setLoading(true);
     const params = new URLSearchParams();
     if (f.search) params.set('search', f.search);
+    if (f.listingType) params.set('listingType', f.listingType);
     if (f.type) params.set('type', f.type);
     if (f.department) params.set('department', f.department);
     if (f.minPrice) params.set('minPrice', String(f.minPrice));

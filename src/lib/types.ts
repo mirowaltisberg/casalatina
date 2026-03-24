@@ -22,11 +22,14 @@ export interface LegalStatus {
   legallyClear: boolean;
 }
 
+export type ListingType = 'venta' | 'alquiler';
+
 export interface Property {
   id: string;
   title: string;
   description: string;
   type: PropertyType;
+  listingType: ListingType;
   priceUSD: number;
   images: string[];
   location: {
@@ -63,6 +66,7 @@ export interface ContactFormData {
 }
 
 export interface PropertyFilters {
+  listingType?: ListingType;
   type?: PropertyType;
   minPrice?: number;
   maxPrice?: number;

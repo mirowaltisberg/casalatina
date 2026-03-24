@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import type { PropertyFilters, Feature } from '@/lib/types';
+import type { PropertyFilters, Feature, ListingType } from '@/lib/types';
 import { DEPARTMENT_OPTIONS } from '@/lib/utils';
 import { useI18n } from '@/lib/i18n';
 import type { TranslationKey } from '@/lib/translations';
@@ -58,6 +58,31 @@ export function FilterSidebar({ filters, onChange, onClose, isOpen = true }: Fil
         >
           {t('filter.clearAll')}
         </button>
+      </div>
+
+      {/* Listing type: Buy / Rent */}
+      <div>
+        <label className="block text-xs font-semibold uppercase tracking-wider text-warm-400 mb-2">
+          {t('listingType.label')}
+        </label>
+        <div className="grid grid-cols-3 gap-1.5">
+          {([undefined, 'venta', 'alquiler'] as (ListingType | undefined)[]).map((lt) => {
+            const labelKey = lt ? `listingType.${lt}` as TranslationKey : 'listingType.all' as TranslationKey;
+            return (
+              <button
+                key={lt ?? 'all'}
+                onClick={() => update({ listingType: lt })}
+                className={`rounded-lg px-3 py-2 text-xs font-medium transition-all duration-200 ${
+                  localFilters.listingType === lt
+                    ? 'bg-accent-600 text-white shadow-sm'
+                    : 'bg-warm-100 text-warm-600 hover:bg-warm-200'
+                }`}
+              >
+                {t(labelKey)}
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       <div>

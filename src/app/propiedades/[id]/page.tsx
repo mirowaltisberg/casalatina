@@ -85,6 +85,11 @@ export default function PropertyDetailPage({ params }: { params: Promise<{ id: s
         <div className="lg:col-span-2 space-y-8">
           <div>
             <div className="flex flex-wrap items-start gap-2 mb-2">
+              <span className={`inline-flex items-center rounded-md px-2.5 py-1 text-xs font-medium text-white ${
+                property.listingType === 'alquiler' ? 'bg-blue-600' : 'bg-success-600'
+              }`}>
+                {t(`listingType.badge.${property.listingType}` as TranslationKey)}
+              </span>
               <span className="inline-flex items-center rounded-md bg-warm-100 px-2.5 py-1 text-xs font-medium text-warm-700">
                 {t(typeKey)}
               </span>

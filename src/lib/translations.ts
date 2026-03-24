@@ -61,6 +61,15 @@ const translations = {
   'feature.rio': { es: 'Río', en: 'River', de: 'Fluss' },
   'feature.bosque': { es: 'Bosque', en: 'Forest', de: 'Wald' },
 
+  // Listing type (rent/buy)
+  'listingType.all': { es: 'Todos', en: 'All', de: 'Alle' },
+  'listingType.venta': { es: 'Comprar', en: 'Buy', de: 'Kaufen' },
+  'listingType.alquiler': { es: 'Alquilar', en: 'Rent', de: 'Mieten' },
+  'listingType.label': { es: 'Comprar / Alquilar', en: 'Buy / Rent', de: 'Kaufen / Mieten' },
+  'listingType.badge.venta': { es: 'Venta', en: 'For Sale', de: 'Zu verkaufen' },
+  'listingType.badge.alquiler': { es: 'Alquiler', en: 'For Rent', de: 'Zu vermieten' },
+  'listingType.perMonth': { es: '/mes', en: '/mo', de: '/Mt.' },
+
   // Featured section
   'featured.title': { es: 'Propiedades Destacadas', en: 'Featured Properties', de: 'Ausgewählte Immobilien' },
   'featured.subtitle': {

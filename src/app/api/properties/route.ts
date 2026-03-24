@@ -6,6 +6,7 @@ export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
 
   const filters: PropertyFilters = {
+    listingType: searchParams.get('listingType') as PropertyFilters['listingType'] ?? undefined,
     type: searchParams.get('type') as PropertyFilters['type'] ?? undefined,
     minPrice: searchParams.get('minPrice') ? Number(searchParams.get('minPrice')) : undefined,
     maxPrice: searchParams.get('maxPrice') ? Number(searchParams.get('maxPrice')) : undefined,
@@ -29,6 +30,10 @@ export async function GET(request: NextRequest) {
         p.location.city.toLowerCase().includes(q) ||
         p.location.department.toLowerCase().includes(q)
     );
+  }
+
+  if (filters.listingType) {
+    filtered = filtered.filter((p) => p.listingType === filters.listingType);
   }
 
   if (filters.type) {

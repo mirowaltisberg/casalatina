@@ -10,6 +10,7 @@ export function SearchBar() {
   const router = useRouter();
   const { t } = useI18n();
   const [search, setSearch] = useState('');
+  const [listingType, setListingType] = useState('');
   const [type, setType] = useState('');
   const [department, setDepartment] = useState('');
 
@@ -17,6 +18,7 @@ export function SearchBar() {
     e.preventDefault();
     const params = new URLSearchParams();
     if (search) params.set('search', search);
+    if (listingType) params.set('listingType', listingType);
     if (type) params.set('type', type);
     if (department) params.set('department', department);
     router.push(`/propiedades?${params.toString()}`);
@@ -38,6 +40,27 @@ export function SearchBar() {
       className="w-full max-w-3xl mx-auto"
     >
       <div className="bg-white rounded-2xl shadow-xl shadow-warm-900/5 border border-warm-200 p-2">
+        {/* Buy / Rent toggle */}
+        <div className="flex gap-1 mb-2 px-1">
+          {[
+            { value: '', label: t('listingType.all') },
+            { value: 'venta', label: t('listingType.venta') },
+            { value: 'alquiler', label: t('listingType.alquiler') },
+          ].map((opt) => (
+            <button
+              key={opt.value}
+              type="button"
+              onClick={() => setListingType(opt.value)}
+              className={`rounded-lg px-4 py-1.5 text-xs font-medium transition-all duration-200 ${
+                listingType === opt.value
+                  ? 'bg-accent-600 text-white'
+                  : 'text-warm-500 hover:text-warm-700 hover:bg-warm-100'
+              }`}
+            >
+              {opt.label}
+            </button>
+          ))}
+        </div>
         <div className="flex flex-col sm:flex-row gap-2">
           <div className="flex-1 relative">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="absolute left-3.5 top-1/2 -translate-y-1/2 text-warm-400">
