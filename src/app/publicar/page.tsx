@@ -6,6 +6,7 @@ import { DEPARTMENT_OPTIONS } from '@/lib/utils';
 import type { PropertyType, Feature } from '@/lib/types';
 import { useI18n } from '@/lib/i18n';
 import type { TranslationKey } from '@/lib/translations';
+import { useHaptics } from '@/hooks/useHaptics';
 
 type Step = 1 | 2 | 3;
 
@@ -17,6 +18,7 @@ export default function PublicarPage() {
   const [step, setStep] = useState<Step>(1);
   const [submitted, setSubmitted] = useState(false);
   const { t } = useI18n();
+  const { trigger } = useHaptics();
   const [form, setForm] = useState({
     title: '',
     description: '',
@@ -48,6 +50,7 @@ export default function PublicarPage() {
     e.preventDefault();
     console.log('[CasaLatina] Nuevo listado:', form);
     setSubmitted(true);
+    trigger('success');
   };
 
   if (submitted) {
@@ -144,7 +147,7 @@ export default function PublicarPage() {
                 <label className="block text-xs font-medium text-warm-700 mb-1.5">{t('publish.description')}</label>
                 <textarea required rows={5} value={form.description} onChange={(e) => update({ description: e.target.value })} className="w-full rounded-lg border border-warm-200 bg-white px-3.5 py-2.5 text-sm text-warm-900 outline-none focus:ring-2 focus:ring-accent-500/20 focus:border-accent-300 transition-all duration-200 resize-none placeholder:text-warm-400" placeholder={t('publish.descPlaceholder')} />
               </div>
-              <button type="button" onClick={() => setStep(2)} disabled={!form.title || !form.type || !form.priceUSD} className="w-full rounded-lg bg-accent-600 py-3 text-sm font-medium text-white transition-all duration-200 hover:bg-accent-700 active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed">
+              <button type="button" onClick={() => { setStep(2); trigger('light'); }} disabled={!form.title || !form.type || !form.priceUSD} className="w-full rounded-lg bg-accent-600 py-3 text-sm font-medium text-white transition-all duration-200 hover:bg-accent-700 active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed">
                 {t('publish.nextDetails')}
               </button>
             </motion.div>
@@ -207,7 +210,7 @@ export default function PublicarPage() {
                 <button type="button" onClick={() => setStep(1)} className="flex-1 rounded-lg border border-warm-200 bg-white py-3 text-sm font-medium text-warm-700 transition-all duration-200 hover:bg-warm-50">
                   {t('publish.previous')}
                 </button>
-                <button type="button" onClick={() => setStep(3)} disabled={!form.city || !form.department} className="flex-1 rounded-lg bg-accent-600 py-3 text-sm font-medium text-white transition-all duration-200 hover:bg-accent-700 active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed">
+                <button type="button" onClick={() => { setStep(3); trigger('light'); }} disabled={!form.city || !form.department} className="flex-1 rounded-lg bg-accent-600 py-3 text-sm font-medium text-white transition-all duration-200 hover:bg-accent-700 active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed">
                   {t('publish.nextContact')}
                 </button>
               </div>

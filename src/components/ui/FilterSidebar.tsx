@@ -6,6 +6,7 @@ import type { PropertyFilters, Feature, ListingType } from '@/lib/types';
 import { DEPARTMENT_OPTIONS } from '@/lib/utils';
 import { useI18n } from '@/lib/i18n';
 import type { TranslationKey } from '@/lib/translations';
+import { useHaptics } from '@/hooks/useHaptics';
 
 interface FilterSidebarProps {
   filters: PropertyFilters;
@@ -20,11 +21,13 @@ const MATERIAL_KEYS = ['concreto', 'madera', 'adobe', 'mixto', 'piedra'] as cons
 export function FilterSidebar({ filters, onChange, onClose, isOpen = true }: FilterSidebarProps) {
   const [localFilters, setLocalFilters] = useState<PropertyFilters>(filters);
   const { t } = useI18n();
+  const { trigger } = useHaptics();
 
   const update = (partial: Partial<PropertyFilters>) => {
     const next = { ...localFilters, ...partial };
     setLocalFilters(next);
     onChange(next);
+    trigger('selection');
   };
 
   const toggleFeature = (feature: Feature) => {

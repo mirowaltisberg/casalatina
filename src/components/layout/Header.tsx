@@ -5,11 +5,13 @@ import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useI18n } from '@/lib/i18n';
 import { LOCALE_LABELS, LOCALE_NAMES, type Locale } from '@/lib/translations';
+import { useHaptics } from '@/hooks/useHaptics';
 
 export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [langOpen, setLangOpen] = useState(false);
   const langRef = useRef<HTMLDivElement>(null);
+  const { trigger } = useHaptics();
   const { locale, setLocale, t } = useI18n();
 
   useEffect(() => {
@@ -88,7 +90,7 @@ export function Header() {
                     {(Object.keys(LOCALE_LABELS) as Locale[]).map((l) => (
                       <button
                         key={l}
-                        onClick={() => { setLocale(l); setLangOpen(false); }}
+                        onClick={() => { setLocale(l); setLangOpen(false); trigger('selection'); }}
                         className={`flex items-center justify-between w-full px-3 py-2 text-xs transition-colors duration-150 ${
                           locale === l
                             ? 'bg-accent-50 text-accent-700 font-medium'
@@ -123,6 +125,7 @@ export function Header() {
                 const locales: Locale[] = ['es', 'en', 'de'];
                 const next = locales[(locales.indexOf(locale) + 1) % locales.length];
                 setLocale(next);
+                trigger('selection');
               }}
               className="p-2 rounded-lg text-warm-600 hover:bg-warm-100 transition-colors duration-200 text-xs font-semibold"
             >
@@ -130,7 +133,7 @@ export function Header() {
             </button>
 
             <button
-              onClick={() => setMobileOpen(!mobileOpen)}
+              onClick={() => { setMobileOpen(!mobileOpen); trigger('light'); }}
               className="p-2 rounded-lg text-warm-600 hover:bg-warm-100 transition-colors duration-200"
               aria-label={t('nav.menu')}
             >

@@ -5,10 +5,12 @@ import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { DEPARTMENT_OPTIONS } from '@/lib/utils';
 import { useI18n } from '@/lib/i18n';
+import { useHaptics } from '@/hooks/useHaptics';
 
 export function SearchBar() {
   const router = useRouter();
   const { t } = useI18n();
+  const { trigger } = useHaptics();
   const [search, setSearch] = useState('');
   const [listingType, setListingType] = useState('');
   const [type, setType] = useState('');
@@ -16,6 +18,7 @@ export function SearchBar() {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
+    trigger('medium');
     const params = new URLSearchParams();
     if (search) params.set('search', search);
     if (listingType) params.set('listingType', listingType);
@@ -50,7 +53,7 @@ export function SearchBar() {
             <button
               key={opt.value}
               type="button"
-              onClick={() => setListingType(opt.value)}
+              onClick={() => { setListingType(opt.value); trigger('selection'); }}
               className={`rounded-lg px-4 py-1.5 text-xs font-medium transition-all duration-200 ${
                 listingType === opt.value
                   ? 'bg-accent-600 text-white'

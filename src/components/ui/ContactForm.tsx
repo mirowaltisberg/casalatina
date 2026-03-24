@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useI18n } from '@/lib/i18n';
+import { useHaptics } from '@/hooks/useHaptics';
 
 interface ContactFormProps {
   propertyId: string;
@@ -13,10 +14,12 @@ export function ContactForm({ propertyId, sellerName }: ContactFormProps) {
   const [form, setForm] = useState({ name: '', email: '', phone: '', message: '' });
   const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
   const { t } = useI18n();
+  const { trigger } = useHaptics();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus('sending');
+    trigger('medium');
 
     try {
       const res = await fetch('/api/contact', {
@@ -28,8 +31,10 @@ export function ContactForm({ propertyId, sellerName }: ContactFormProps) {
       if (!res.ok) throw new Error();
       setStatus('sent');
       setForm({ name: '', email: '', phone: '', message: '' });
+      trigger('success');
     } catch {
       setStatus('error');
+      trigger('error');
     }
   };
 

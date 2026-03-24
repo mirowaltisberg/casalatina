@@ -6,6 +6,7 @@ import { motion } from 'framer-motion';
 import type { Property } from '@/lib/types';
 import { formatPrice } from '@/lib/utils';
 import { LegalBadge } from './LegalBadge';
+import { useHaptics } from '@/hooks/useHaptics';
 import { useI18n } from '@/lib/i18n';
 import type { TranslationKey } from '@/lib/translations';
 
@@ -16,6 +17,7 @@ interface PropertyCardProps {
 
 export function PropertyCard({ property, index = 0 }: PropertyCardProps) {
   const { t } = useI18n();
+  const { trigger } = useHaptics();
 
   const typeKey = `type.${property.type}` as TranslationKey;
 
@@ -25,7 +27,7 @@ export function PropertyCard({ property, index = 0 }: PropertyCardProps) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.06, duration: 0.35, ease: 'easeOut' }}
     >
-      <Link href={`/propiedades/${property.id}`} className="group block">
+      <Link href={`/propiedades/${property.id}`} className="group block" onClick={() => trigger('light')}>
         <div className="rounded-xl border border-warm-200 bg-white overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-warm-200/50 hover:-translate-y-1">
           <div className="relative h-52 overflow-hidden">
             <Image
