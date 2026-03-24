@@ -1,6 +1,14 @@
+'use client';
+
 import Link from 'next/link';
+import { useI18n } from '@/lib/i18n';
 
 export function Footer() {
+  const { t } = useI18n();
+
+  const typeLabels = [t('type.casa'), t('type.terreno'), t('type.apartamento'), t('type.finca')];
+  const serviceLabels = [t('footer.legalVerification'), t('footer.featuredListings'), t('footer.premiumSubscription'), t('footer.advisory')];
+
   return (
     <footer className="border-t border-warm-200 bg-white">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
@@ -19,15 +27,14 @@ export function Footer() {
               </span>
             </Link>
             <p className="mt-3 text-sm text-warm-500 leading-relaxed max-w-xs">
-              La plataforma inmobiliaria más confiable de Honduras. Compra y vende propiedades con verificación legal.
+              {t('footer.tagline')}
             </p>
           </div>
 
-          {/* Links */}
           <div>
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-warm-400 mb-3">Explorar</h3>
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-warm-400 mb-3">{t('footer.explore')}</h3>
             <ul className="space-y-2.5">
-              {['Casas', 'Terrenos', 'Apartamentos', 'Fincas'].map((item) => (
+              {typeLabels.map((item) => (
                 <li key={item}>
                   <Link href="/propiedades" className="text-sm text-warm-600 hover:text-warm-900 transition-colors duration-200">
                     {item}
@@ -38,9 +45,9 @@ export function Footer() {
           </div>
 
           <div>
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-warm-400 mb-3">Servicios</h3>
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-warm-400 mb-3">{t('footer.services')}</h3>
             <ul className="space-y-2.5">
-              {['Verificación Legal', 'Listados Destacados', 'Suscripción Premium', 'Asesoría'].map((item) => (
+              {serviceLabels.map((item) => (
                 <li key={item}>
                   <span className="text-sm text-warm-600">{item}</span>
                 </li>
@@ -49,7 +56,7 @@ export function Footer() {
           </div>
 
           <div>
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-warm-400 mb-3">Regiones</h3>
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-warm-400 mb-3">{t('footer.regions')}</h3>
             <ul className="space-y-2.5">
               {['Roatán', 'Tegucigalpa', 'San Pedro Sula', 'La Ceiba', 'Copán'].map((item) => (
                 <li key={item}>
@@ -62,13 +69,12 @@ export function Footer() {
           </div>
         </div>
 
-        {/* Bottom */}
         <div className="mt-12 pt-8 border-t border-warm-100 flex flex-col sm:flex-row justify-between items-center gap-4">
           <p className="text-xs text-warm-400">
-            © 2026 CasaLatina. Todos los derechos reservados.
+            {t('footer.copyright')}
           </p>
           <div className="flex items-center gap-1.5 text-xs text-warm-400">
-            <span>Tipo de cambio referencial:</span>
+            <span>{t('footer.exchangeRate')}</span>
             <span className="font-medium text-warm-600">1 USD = 24.72 HNL</span>
             <span className="text-warm-300">|</span>
             <span>Banco Central de Honduras</span>

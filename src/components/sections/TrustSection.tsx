@@ -1,8 +1,10 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { useI18n } from '@/lib/i18n';
+import type { TranslationKey } from '@/lib/translations';
 
-const features = [
+const featureKeys: { icon: React.ReactNode; titleKey: TranslationKey; descKey: TranslationKey }[] = [
   {
     icon: (
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -10,8 +12,8 @@ const features = [
         <path d="M9 12l2 2 4-4" />
       </svg>
     ),
-    title: 'Verificación Legal',
-    description: 'Cada propiedad muestra su estado legal: registro municipal, propiedad, impuestos y gravámenes.',
+    titleKey: 'trust.legal.title',
+    descKey: 'trust.legal.desc',
   },
   {
     icon: (
@@ -21,8 +23,8 @@ const features = [
         <line x1="12" y1="16" x2="12.01" y2="16" />
       </svg>
     ),
-    title: 'Transparencia Total',
-    description: 'Precios en dólares y lempiras con tipo de cambio oficial. Sin costos ocultos ni sorpresas.',
+    titleKey: 'trust.transparency.title',
+    descKey: 'trust.transparency.desc',
   },
   {
     icon: (
@@ -32,8 +34,8 @@ const features = [
         <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" />
       </svg>
     ),
-    title: 'Contacto Mediado',
-    description: 'CasaLatina media el primer contacto entre comprador y vendedor para mayor seguridad.',
+    titleKey: 'trust.mediated.title',
+    descKey: 'trust.mediated.desc',
   },
   {
     icon: (
@@ -42,12 +44,14 @@ const features = [
         <line x1="1" y1="10" x2="23" y2="10" />
       </svg>
     ),
-    title: 'Doble Moneda',
-    description: 'Todos los precios en USD y HNL con tipo de cambio del Banco Central de Honduras.',
+    titleKey: 'trust.currency.title',
+    descKey: 'trust.currency.desc',
   },
 ];
 
 export function TrustSection() {
+  const { t } = useI18n();
+
   return (
     <section className="py-20 bg-white">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -59,18 +63,17 @@ export function TrustSection() {
           className="text-center max-w-2xl mx-auto mb-14"
         >
           <h2 className="text-2xl sm:text-3xl font-bold text-warm-900">
-            Confianza en cada transacción
+            {t('trust.title')}
           </h2>
           <p className="mt-3 text-sm text-warm-500 leading-relaxed">
-            Sabemos que comprar propiedad en Honduras requiere confianza. Por eso construimos
-            herramientas de verificación y transparencia únicas en la región.
+            {t('trust.subtitle')}
           </p>
         </motion.div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {features.map((feature, i) => (
+          {featureKeys.map((feature, i) => (
             <motion.div
-              key={feature.title}
+              key={feature.titleKey}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -80,8 +83,8 @@ export function TrustSection() {
               <div className="inline-flex items-center justify-center h-11 w-11 rounded-lg bg-accent-100 text-accent-600 transition-colors duration-300 group-hover:bg-accent-600 group-hover:text-white">
                 {feature.icon}
               </div>
-              <h3 className="mt-4 text-sm font-semibold text-warm-900">{feature.title}</h3>
-              <p className="mt-2 text-sm text-warm-500 leading-relaxed">{feature.description}</p>
+              <h3 className="mt-4 text-sm font-semibold text-warm-900">{t(feature.titleKey)}</h3>
+              <p className="mt-2 text-sm text-warm-500 leading-relaxed">{t(feature.descKey)}</p>
             </motion.div>
           ))}
         </div>

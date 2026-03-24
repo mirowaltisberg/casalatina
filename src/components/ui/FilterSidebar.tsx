@@ -3,11 +3,9 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { PropertyFilters, Feature } from '@/lib/types';
-import {
-  PROPERTY_TYPE_LABELS,
-  FEATURE_LABELS,
-  DEPARTMENT_OPTIONS,
-} from '@/lib/utils';
+import { DEPARTMENT_OPTIONS } from '@/lib/utils';
+import { useI18n } from '@/lib/i18n';
+import type { TranslationKey } from '@/lib/translations';
 
 interface FilterSidebarProps {
   filters: PropertyFilters;
@@ -16,8 +14,12 @@ interface FilterSidebarProps {
   isOpen?: boolean;
 }
 
+const FEATURE_KEYS: Feature[] = ['vista_al_mar', 'playa', 'montañas', 'ciudad', 'pueblo', 'colonial', 'isla', 'rio', 'bosque'];
+const MATERIAL_KEYS = ['concreto', 'madera', 'adobe', 'mixto', 'piedra'] as const;
+
 export function FilterSidebar({ filters, onChange, onClose, isOpen = true }: FilterSidebarProps) {
   const [localFilters, setLocalFilters] = useState<PropertyFilters>(filters);
+  const { t } = useI18n();
 
   const update = (partial: Partial<PropertyFilters>) => {
     const next = { ...localFilters, ...partial };
@@ -39,26 +41,31 @@ export function FilterSidebar({ filters, onChange, onClose, isOpen = true }: Fil
     onChange(empty);
   };
 
+  const typeOptions = [
+    { value: 'casa', labelKey: 'type.casa' as TranslationKey },
+    { value: 'terreno', labelKey: 'type.terreno' as TranslationKey },
+    { value: 'apartamento', labelKey: 'type.apartamento' as TranslationKey },
+    { value: 'finca', labelKey: 'type.finca' as TranslationKey },
+  ];
+
   const content = (
     <div className="space-y-6">
-      {/* Header */}
       <div className="flex items-center justify-between">
-        <h2 className="text-base font-semibold text-warm-900">Filtros</h2>
+        <h2 className="text-base font-semibold text-warm-900">{t('listings.filters')}</h2>
         <button
           onClick={clearAll}
           className="text-xs text-accent-600 hover:text-accent-700 font-medium transition-colors duration-200"
         >
-          Limpiar todo
+          {t('filter.clearAll')}
         </button>
       </div>
 
-      {/* Property type */}
       <div>
         <label className="block text-xs font-semibold uppercase tracking-wider text-warm-400 mb-2">
-          Tipo de propiedad
+          {t('filter.propertyType')}
         </label>
         <div className="grid grid-cols-2 gap-1.5">
-          {Object.entries(PROPERTY_TYPE_LABELS).map(([value, label]) => (
+          {typeOptions.map(({ value, labelKey }) => (
             <button
               key={value}
               onClick={() => update({ type: localFilters.type === value ? undefined : value as PropertyFilters['type'] })}
@@ -68,45 +75,43 @@ export function FilterSidebar({ filters, onChange, onClose, isOpen = true }: Fil
                   : 'bg-warm-100 text-warm-600 hover:bg-warm-200'
               }`}
             >
-              {label}
+              {t(labelKey)}
             </button>
           ))}
         </div>
       </div>
 
-      {/* Department */}
       <div>
         <label className="block text-xs font-semibold uppercase tracking-wider text-warm-400 mb-2">
-          Departamento
+          {t('filter.department')}
         </label>
         <select
           value={localFilters.department ?? ''}
           onChange={(e) => update({ department: e.target.value || undefined })}
           className="w-full rounded-lg border border-warm-200 bg-white px-3 py-2.5 text-sm text-warm-700 outline-none focus:ring-2 focus:ring-accent-500/20 focus:border-accent-300 transition-all duration-200"
         >
-          <option value="">Todos</option>
+          <option value="">{t('filter.all')}</option>
           {DEPARTMENT_OPTIONS.map((d) => (
             <option key={d} value={d}>{d}</option>
           ))}
         </select>
       </div>
 
-      {/* Price range */}
       <div>
         <label className="block text-xs font-semibold uppercase tracking-wider text-warm-400 mb-2">
-          Rango de precio (USD)
+          {t('filter.priceRange')}
         </label>
         <div className="flex gap-2">
           <input
             type="number"
-            placeholder="Mín"
+            placeholder={t('filter.min')}
             value={localFilters.minPrice ?? ''}
             onChange={(e) => update({ minPrice: e.target.value ? Number(e.target.value) : undefined })}
             className="w-full rounded-lg border border-warm-200 bg-white px-3 py-2.5 text-sm text-warm-700 outline-none focus:ring-2 focus:ring-accent-500/20 focus:border-accent-300 transition-all duration-200"
           />
           <input
             type="number"
-            placeholder="Máx"
+            placeholder={t('filter.max')}
             value={localFilters.maxPrice ?? ''}
             onChange={(e) => update({ maxPrice: e.target.value ? Number(e.target.value) : undefined })}
             className="w-full rounded-lg border border-warm-200 bg-white px-3 py-2.5 text-sm text-warm-700 outline-none focus:ring-2 focus:ring-accent-500/20 focus:border-accent-300 transition-all duration-200"
@@ -114,10 +119,9 @@ export function FilterSidebar({ filters, onChange, onClose, isOpen = true }: Fil
         </div>
       </div>
 
-      {/* Bedrooms */}
       <div>
         <label className="block text-xs font-semibold uppercase tracking-wider text-warm-400 mb-2">
-          Habitaciones mínimas
+          {t('filter.minBedrooms')}
         </label>
         <div className="flex gap-1.5">
           {[1, 2, 3, 4, 5].map((n) => (
@@ -136,66 +140,63 @@ export function FilterSidebar({ filters, onChange, onClose, isOpen = true }: Fil
         </div>
       </div>
 
-      {/* Features */}
       <div>
         <label className="block text-xs font-semibold uppercase tracking-wider text-warm-400 mb-2">
-          Características
+          {t('filter.features')}
         </label>
         <div className="flex flex-wrap gap-1.5">
-          {Object.entries(FEATURE_LABELS).map(([value, label]) => (
-            <button
-              key={value}
-              onClick={() => toggleFeature(value as Feature)}
-              className={`rounded-full px-3 py-1.5 text-xs font-medium transition-all duration-200 ${
-                localFilters.features?.includes(value as Feature)
-                  ? 'bg-accent-600 text-white shadow-sm'
-                  : 'bg-warm-100 text-warm-600 hover:bg-warm-200'
-              }`}
-            >
-              {label}
-            </button>
-          ))}
+          {FEATURE_KEYS.map((f) => {
+            const featureKey = `feature.${f}` as TranslationKey;
+            return (
+              <button
+                key={f}
+                onClick={() => toggleFeature(f)}
+                className={`rounded-full px-3 py-1.5 text-xs font-medium transition-all duration-200 ${
+                  localFilters.features?.includes(f)
+                    ? 'bg-accent-600 text-white shadow-sm'
+                    : 'bg-warm-100 text-warm-600 hover:bg-warm-200'
+                }`}
+              >
+                {t(featureKey)}
+              </button>
+            );
+          })}
         </div>
       </div>
 
-      {/* Building material */}
       <div>
         <label className="block text-xs font-semibold uppercase tracking-wider text-warm-400 mb-2">
-          Material de construcción
+          {t('filter.buildingMaterial')}
         </label>
         <div className="flex flex-wrap gap-1.5">
-          {[
-            { value: 'concreto', label: 'Concreto' },
-            { value: 'madera', label: 'Madera' },
-            { value: 'adobe', label: 'Adobe' },
-            { value: 'mixto', label: 'Mixto' },
-            { value: 'piedra', label: 'Piedra' },
-          ].map(({ value, label }) => (
-            <button
-              key={value}
-              onClick={() =>
-                update({
-                  buildingMaterial:
-                    localFilters.buildingMaterial === value
-                      ? undefined
-                      : (value as PropertyFilters['buildingMaterial']),
-                })
-              }
-              className={`rounded-full px-3 py-1.5 text-xs font-medium transition-all duration-200 ${
-                localFilters.buildingMaterial === value
-                  ? 'bg-accent-600 text-white shadow-sm'
-                  : 'bg-warm-100 text-warm-600 hover:bg-warm-200'
-              }`}
-            >
-              {label}
-            </button>
-          ))}
+          {MATERIAL_KEYS.map((m) => {
+            const matKey = `filter.material.${m}` as TranslationKey;
+            return (
+              <button
+                key={m}
+                onClick={() =>
+                  update({
+                    buildingMaterial:
+                      localFilters.buildingMaterial === m
+                        ? undefined
+                        : (m as PropertyFilters['buildingMaterial']),
+                  })
+                }
+                className={`rounded-full px-3 py-1.5 text-xs font-medium transition-all duration-200 ${
+                  localFilters.buildingMaterial === m
+                    ? 'bg-accent-600 text-white shadow-sm'
+                    : 'bg-warm-100 text-warm-600 hover:bg-warm-200'
+                }`}
+              >
+                {t(matKey)}
+              </button>
+            );
+          })}
         </div>
       </div>
     </div>
   );
 
-  // Mobile: slide-in overlay
   if (onClose !== undefined) {
     return (
       <AnimatePresence>
@@ -217,7 +218,7 @@ export function FilterSidebar({ filters, onChange, onClose, isOpen = true }: Fil
               className="fixed inset-y-0 left-0 z-50 w-80 bg-white border-r border-warm-200 overflow-y-auto p-6 lg:hidden"
             >
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-base font-semibold text-warm-900">Filtros</h2>
+                <h2 className="text-base font-semibold text-warm-900">{t('listings.filters')}</h2>
                 <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-warm-100 transition-colors duration-200">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                     <path d="M18 6L6 18M6 6l12 12" />
@@ -232,6 +233,5 @@ export function FilterSidebar({ filters, onChange, onClose, isOpen = true }: Fil
     );
   }
 
-  // Desktop: static sidebar
   return <aside className="hidden lg:block w-72 shrink-0">{content}</aside>;
 }

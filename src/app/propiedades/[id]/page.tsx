@@ -9,13 +9,15 @@ import { PriceDisplay } from '@/components/ui/PriceDisplay';
 import { LegalBadge } from '@/components/ui/LegalBadge';
 import { ContactForm } from '@/components/ui/ContactForm';
 import { Skeleton } from '@/components/ui/Skeleton';
-import { PROPERTY_TYPE_LABELS, FEATURE_LABELS } from '@/lib/utils';
+import { useI18n } from '@/lib/i18n';
+import type { TranslationKey } from '@/lib/translations';
 
 export default function PropertyDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const [property, setProperty] = useState<Property | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const { t } = useI18n();
 
   useEffect(() => {
     fetch(`/api/properties/${id}`)
@@ -51,13 +53,15 @@ export default function PropertyDetailPage({ params }: { params: Promise<{ id: s
   if (error || !property) {
     return (
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-20 text-center">
-        <p className="text-lg font-medium text-warm-700">Propiedad no encontrada</p>
+        <p className="text-lg font-medium text-warm-700">{t('detail.notFound')}</p>
         <Link href="/propiedades" className="mt-4 inline-flex text-sm text-accent-600 hover:text-accent-700 font-medium">
-          Volver a propiedades
+          {t('detail.backToProperties')}
         </Link>
       </div>
     );
   }
+
+  const typeKey = `type.${property.type}` as TranslationKey;
 
   return (
     <motion.div
@@ -68,29 +72,25 @@ export default function PropertyDetailPage({ params }: { params: Promise<{ id: s
     >
       {/* Breadcrumb */}
       <nav className="flex items-center gap-2 text-sm text-warm-500 mb-6">
-        <Link href="/" className="hover:text-warm-700 transition-colors duration-200">Inicio</Link>
+        <Link href="/" className="hover:text-warm-700 transition-colors duration-200">{t('detail.home')}</Link>
         <span>/</span>
-        <Link href="/propiedades" className="hover:text-warm-700 transition-colors duration-200">Propiedades</Link>
+        <Link href="/propiedades" className="hover:text-warm-700 transition-colors duration-200">{t('listings.title')}</Link>
         <span>/</span>
         <span className="text-warm-700 truncate max-w-[200px]">{property.title}</span>
       </nav>
 
-      {/* Gallery */}
       <ImageGallery images={property.images} title={property.title} />
 
-      {/* Content grid */}
       <div className="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Main content */}
         <div className="lg:col-span-2 space-y-8">
-          {/* Title & Price */}
           <div>
             <div className="flex flex-wrap items-start gap-2 mb-2">
               <span className="inline-flex items-center rounded-md bg-warm-100 px-2.5 py-1 text-xs font-medium text-warm-700">
-                {PROPERTY_TYPE_LABELS[property.type]}
+                {t(typeKey)}
               </span>
               {property.promoted && (
                 <span className="inline-flex items-center rounded-md bg-accent-100 px-2.5 py-1 text-xs font-medium text-accent-700">
-                  Destacado
+                  {t('featured.promoted')}
                 </span>
               )}
             </div>
@@ -107,54 +107,54 @@ export default function PropertyDetailPage({ params }: { params: Promise<{ id: s
             </div>
           </div>
 
-          {/* Details grid */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             {property.size.terrain ? (
               <div className="rounded-lg bg-warm-50 border border-warm-200 p-4 text-center">
-                <p className="text-xs text-warm-500">Terreno</p>
+                <p className="text-xs text-warm-500">{t('detail.terrain')}</p>
                 <p className="text-base font-semibold text-warm-900 mt-1">{property.size.terrain.toLocaleString()} m²</p>
               </div>
             ) : null}
             {property.size.construction ? (
               <div className="rounded-lg bg-warm-50 border border-warm-200 p-4 text-center">
-                <p className="text-xs text-warm-500">Construcción</p>
+                <p className="text-xs text-warm-500">{t('detail.construction')}</p>
                 <p className="text-base font-semibold text-warm-900 mt-1">{property.size.construction.toLocaleString()} m²</p>
               </div>
             ) : null}
             {property.bedrooms ? (
               <div className="rounded-lg bg-warm-50 border border-warm-200 p-4 text-center">
-                <p className="text-xs text-warm-500">Habitaciones</p>
+                <p className="text-xs text-warm-500">{t('detail.bedrooms')}</p>
                 <p className="text-base font-semibold text-warm-900 mt-1">{property.bedrooms}</p>
               </div>
             ) : null}
             {property.bathrooms ? (
               <div className="rounded-lg bg-warm-50 border border-warm-200 p-4 text-center">
-                <p className="text-xs text-warm-500">Baños</p>
+                <p className="text-xs text-warm-500">{t('detail.bathrooms')}</p>
                 <p className="text-base font-semibold text-warm-900 mt-1">{property.bathrooms}</p>
               </div>
             ) : null}
           </div>
 
-          {/* Description */}
           <div>
-            <h2 className="text-base font-semibold text-warm-900 mb-3">Descripción</h2>
+            <h2 className="text-base font-semibold text-warm-900 mb-3">{t('detail.description')}</h2>
             <p className="text-sm text-warm-600 leading-relaxed whitespace-pre-line">
               {property.description}
             </p>
           </div>
 
-          {/* Features */}
           <div>
-            <h2 className="text-base font-semibold text-warm-900 mb-3">Características</h2>
+            <h2 className="text-base font-semibold text-warm-900 mb-3">{t('detail.characteristics')}</h2>
             <div className="flex flex-wrap gap-2">
-              {property.features.map((f) => (
-                <span key={f} className="inline-flex items-center rounded-full bg-accent-50 px-3 py-1.5 text-xs font-medium text-accent-700">
-                  {FEATURE_LABELS[f]}
-                </span>
-              ))}
+              {property.features.map((f) => {
+                const featureKey = `feature.${f}` as TranslationKey;
+                return (
+                  <span key={f} className="inline-flex items-center rounded-full bg-accent-50 px-3 py-1.5 text-xs font-medium text-accent-700">
+                    {t(featureKey)}
+                  </span>
+                );
+              })}
               {property.buildingMaterial && (
                 <span className="inline-flex items-center rounded-full bg-warm-100 px-3 py-1.5 text-xs font-medium text-warm-700">
-                  {property.buildingMaterial.charAt(0).toUpperCase() + property.buildingMaterial.slice(1)}
+                  {t(`filter.material.${property.buildingMaterial}` as TranslationKey)}
                 </span>
               )}
               {property.houseType && (
@@ -165,13 +165,10 @@ export default function PropertyDetailPage({ params }: { params: Promise<{ id: s
             </div>
           </div>
 
-          {/* Legal status (large, inline) */}
           <LegalBadge legalStatus={property.legalStatus} />
         </div>
 
-        {/* Sidebar */}
         <div className="space-y-6">
-          {/* Seller info */}
           <div className="rounded-xl border border-warm-200 bg-white p-5">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-warm-100 text-warm-600">
@@ -183,22 +180,20 @@ export default function PropertyDetailPage({ params }: { params: Promise<{ id: s
               <div>
                 <p className="text-sm font-semibold text-warm-900">{property.seller.name}</p>
                 <p className="text-xs text-warm-500">
-                  {property.seller.type === 'empresa' ? 'Empresa inmobiliaria' : 'Vendedor particular'}
+                  {property.seller.type === 'empresa' ? t('detail.realEstate') : t('detail.privateSeller')}
                 </p>
               </div>
             </div>
           </div>
 
-          {/* Contact form */}
           <ContactForm propertyId={property.id} sellerName={property.seller.name} />
 
-          {/* Exchange rate info */}
           <div className="rounded-xl border border-warm-200 bg-warm-50 p-5">
             <p className="text-xs text-warm-500">
-              <span className="font-medium text-warm-700">Tipo de cambio referencial:</span> 1 USD = 24.72 HNL
+              <span className="font-medium text-warm-700">{t('detail.exchangeRate')}</span> 1 USD = 24.72 HNL
             </p>
             <p className="text-[11px] text-warm-400 mt-1">
-              Fuente: Banco Central de Honduras. El tipo de cambio puede variar al momento de la transacción.
+              {t('detail.exchangeDisclaimer')}
             </p>
           </div>
         </div>

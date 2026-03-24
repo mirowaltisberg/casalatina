@@ -2,14 +2,23 @@
 
 import { motion } from 'framer-motion';
 import type { LegalStatus } from '@/lib/types';
-import { LEGAL_STATUS_LABELS } from '@/lib/utils';
+import { useI18n } from '@/lib/i18n';
+import type { TranslationKey } from '@/lib/translations';
 
 interface LegalBadgeProps {
   legalStatus: LegalStatus;
   compact?: boolean;
 }
 
+const LEGAL_KEYS: { key: keyof LegalStatus; labelKey: TranslationKey; descKey: TranslationKey }[] = [
+  { key: 'registeredMunicipality', labelKey: 'legal.registeredMunicipality', descKey: 'legal.registeredMunicipality.desc' },
+  { key: 'inLandRegistry', labelKey: 'legal.inLandRegistry', descKey: 'legal.inLandRegistry.desc' },
+  { key: 'taxesCurrent', labelKey: 'legal.taxesCurrent', descKey: 'legal.taxesCurrent.desc' },
+  { key: 'legallyClear', labelKey: 'legal.legallyClear', descKey: 'legal.legallyClear.desc' },
+];
+
 export function LegalBadge({ legalStatus, compact = false }: LegalBadgeProps) {
+  const { t } = useI18n();
   const entries = Object.entries(legalStatus) as [keyof LegalStatus, boolean][];
   const verifiedCount = entries.filter(([, v]) => v).length;
   const allVerified = verifiedCount === entries.length;
@@ -23,7 +32,7 @@ export function LegalBadge({ legalStatus, compact = false }: LegalBadgeProps) {
               <path d="M9 12l2 2 4-4" />
               <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
             </svg>
-            Verificado
+            {t('legal.badge.verified')}
           </span>
         ) : verifiedCount > 0 ? (
           <span className="inline-flex items-center gap-1 rounded-full bg-warning-50 px-2.5 py-1 text-xs font-medium text-warning-600">
@@ -31,11 +40,11 @@ export function LegalBadge({ legalStatus, compact = false }: LegalBadgeProps) {
               <path d="M12 9v4M12 17h.01" />
               <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
             </svg>
-            Parcial
+            {t('legal.badge.partial')}
           </span>
         ) : (
           <span className="inline-flex items-center gap-1 rounded-full bg-warm-100 px-2.5 py-1 text-xs font-medium text-warm-500">
-            Sin verificar
+            {t('legal.badge.none')}
           </span>
         )}
       </div>
@@ -45,15 +54,15 @@ export function LegalBadge({ legalStatus, compact = false }: LegalBadgeProps) {
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-semibold text-warm-900">Estado Legal</h3>
-        <span className="text-xs text-warm-500">{verifiedCount}/{entries.length} verificados</span>
+        <h3 className="text-sm font-semibold text-warm-900">{t('legal.title')}</h3>
+        <span className="text-xs text-warm-500">{verifiedCount}/{entries.length} {t('legal.verified')}</span>
       </div>
       <div className="space-y-2">
-        {entries.map(([key, verified], i) => {
-          const info = LEGAL_STATUS_LABELS[key];
+        {LEGAL_KEYS.map((item, i) => {
+          const verified = legalStatus[item.key];
           return (
             <motion.div
-              key={key}
+              key={item.key}
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: i * 0.05, duration: 0.2 }}
@@ -74,9 +83,9 @@ export function LegalBadge({ legalStatus, compact = false }: LegalBadgeProps) {
               )}
               <div>
                 <p className={`text-sm font-medium ${verified ? 'text-success-700' : 'text-warm-600'}`}>
-                  {info.label}
+                  {t(item.labelKey)}
                 </p>
-                <p className="text-xs text-warm-500 mt-0.5">{info.description}</p>
+                <p className="text-xs text-warm-500 mt-0.5">{t(item.descKey)}</p>
               </div>
             </motion.div>
           );

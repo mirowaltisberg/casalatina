@@ -4,8 +4,10 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import type { Property } from '@/lib/types';
-import { formatPrice, PROPERTY_TYPE_LABELS, FEATURE_LABELS } from '@/lib/utils';
+import { formatPrice } from '@/lib/utils';
 import { LegalBadge } from './LegalBadge';
+import { useI18n } from '@/lib/i18n';
+import type { TranslationKey } from '@/lib/translations';
 
 interface PropertyCardProps {
   property: Property;
@@ -13,6 +15,10 @@ interface PropertyCardProps {
 }
 
 export function PropertyCard({ property, index = 0 }: PropertyCardProps) {
+  const { t } = useI18n();
+
+  const typeKey = `type.${property.type}` as TranslationKey;
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -21,7 +27,6 @@ export function PropertyCard({ property, index = 0 }: PropertyCardProps) {
     >
       <Link href={`/propiedades/${property.id}`} className="group block">
         <div className="rounded-xl border border-warm-200 bg-white overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-warm-200/50 hover:-translate-y-1">
-          {/* Image */}
           <div className="relative h-52 overflow-hidden">
             <Image
               src={property.images[0]}
@@ -32,7 +37,7 @@ export function PropertyCard({ property, index = 0 }: PropertyCardProps) {
             />
             {property.promoted && (
               <div className="absolute top-3 left-3 rounded-full bg-accent-600 px-3 py-1 text-xs font-medium text-white shadow-sm">
-                Destacado
+                {t('featured.promoted')}
               </div>
             )}
             <div className="absolute top-3 right-3">
@@ -41,7 +46,6 @@ export function PropertyCard({ property, index = 0 }: PropertyCardProps) {
             <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
           </div>
 
-          {/* Content */}
           <div className="p-5">
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0 flex-1">
@@ -58,19 +62,20 @@ export function PropertyCard({ property, index = 0 }: PropertyCardProps) {
               </div>
             </div>
 
-            {/* Tags */}
             <div className="mt-3 flex flex-wrap gap-1.5">
               <span className="inline-flex items-center rounded-md bg-warm-100 px-2 py-0.5 text-xs font-medium text-warm-700">
-                {PROPERTY_TYPE_LABELS[property.type]}
+                {t(typeKey)}
               </span>
-              {property.features.slice(0, 2).map((f) => (
-                <span key={f} className="inline-flex items-center rounded-md bg-accent-50 px-2 py-0.5 text-xs font-medium text-accent-700">
-                  {FEATURE_LABELS[f]}
-                </span>
-              ))}
+              {property.features.slice(0, 2).map((f) => {
+                const featureKey = `feature.${f}` as TranslationKey;
+                return (
+                  <span key={f} className="inline-flex items-center rounded-md bg-accent-50 px-2 py-0.5 text-xs font-medium text-accent-700">
+                    {t(featureKey)}
+                  </span>
+                );
+              })}
             </div>
 
-            {/* Details */}
             <div className="mt-3 flex items-center gap-4 text-xs text-warm-500">
               {property.size.terrain ? (
                 <span className="flex items-center gap-1">
@@ -85,7 +90,7 @@ export function PropertyCard({ property, index = 0 }: PropertyCardProps) {
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M2 4v16M22 4v16M2 8h20M2 16h20M6 8v8M18 8v8" />
                   </svg>
-                  {property.bedrooms} hab.
+                  {property.bedrooms} {t('card.rooms')}
                 </span>
               ) : null}
               {property.bathrooms ? (
@@ -93,15 +98,16 @@ export function PropertyCard({ property, index = 0 }: PropertyCardProps) {
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M4 12h16a1 1 0 011 1v3a4 4 0 01-4 4H7a4 4 0 01-4-4v-3a1 1 0 011-1zM6 12V5a2 2 0 012-2h3v2.25" />
                   </svg>
-                  {property.bathrooms} baños
+                  {property.bathrooms} {t('card.baths')}
                 </span>
               ) : null}
             </div>
 
-            {/* Price */}
             <div className="mt-4 pt-3 border-t border-warm-100 flex items-end justify-between">
               <p className="text-lg font-bold text-warm-900">{formatPrice(property.priceUSD, 'USD')}</p>
-              <p className="text-xs text-warm-400">{property.seller.type === 'empresa' ? 'Empresa' : 'Particular'}</p>
+              <p className="text-xs text-warm-400">
+                {property.seller.type === 'empresa' ? t('card.company') : t('card.individual')}
+              </p>
             </div>
           </div>
         </div>

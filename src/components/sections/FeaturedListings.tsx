@@ -6,10 +6,12 @@ import Link from 'next/link';
 import type { Property } from '@/lib/types';
 import { PropertyCard } from '@/components/ui/PropertyCard';
 import { PropertyCardSkeleton } from '@/components/ui/Skeleton';
+import { useI18n } from '@/lib/i18n';
 
 export function FeaturedListings() {
   const [properties, setProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
+  const { t } = useI18n();
 
   useEffect(() => {
     fetch('/api/properties')
@@ -31,17 +33,17 @@ export function FeaturedListings() {
         >
           <div>
             <h2 className="text-2xl sm:text-3xl font-bold text-warm-900">
-              Propiedades Destacadas
+              {t('featured.title')}
             </h2>
             <p className="mt-2 text-sm text-warm-500">
-              Selección de las mejores oportunidades verificadas
+              {t('featured.subtitle')}
             </p>
           </div>
           <Link
             href="/propiedades"
             className="hidden sm:inline-flex items-center gap-1.5 text-sm font-medium text-accent-600 hover:text-accent-700 transition-colors duration-200"
           >
-            Ver todas
+            {t('featured.viewAll')}
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M5 12h14M12 5l7 7-7 7" />
             </svg>
@@ -61,7 +63,7 @@ export function FeaturedListings() {
             href="/propiedades"
             className="inline-flex items-center gap-1.5 text-sm font-medium text-accent-600"
           >
-            Ver todas las propiedades
+            {t('featured.viewAllMobile')}
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M5 12h14M12 5l7 7-7 7" />
             </svg>

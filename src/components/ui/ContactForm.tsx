@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useI18n } from '@/lib/i18n';
 
 interface ContactFormProps {
   propertyId: string;
@@ -11,6 +12,7 @@ interface ContactFormProps {
 export function ContactForm({ propertyId, sellerName }: ContactFormProps) {
   const [form, setForm] = useState({ name: '', email: '', phone: '', message: '' });
   const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
+  const { t } = useI18n();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,9 +35,9 @@ export function ContactForm({ propertyId, sellerName }: ContactFormProps) {
 
   return (
     <div className="rounded-xl border border-warm-200 bg-white p-6">
-      <h3 className="text-base font-semibold text-warm-900">Contactar al vendedor</h3>
+      <h3 className="text-base font-semibold text-warm-900">{t('contact.title')}</h3>
       <p className="mt-1 text-sm text-warm-500">
-        Envía un mensaje a <span className="font-medium text-warm-700">{sellerName}</span>
+        {t('contact.sendTo')} <span className="font-medium text-warm-700">{sellerName}</span>
       </p>
 
       <AnimatePresence mode="wait">
@@ -52,13 +54,13 @@ export function ContactForm({ propertyId, sellerName }: ContactFormProps) {
                 <path d="M22 4L12 14.01l-3-3" />
               </svg>
             </div>
-            <p className="text-sm font-medium text-warm-900">Mensaje enviado</p>
-            <p className="text-xs text-warm-500 mt-1">El vendedor se pondrá en contacto pronto.</p>
+            <p className="text-sm font-medium text-warm-900">{t('contact.sent')}</p>
+            <p className="text-xs text-warm-500 mt-1">{t('contact.sentDesc')}</p>
             <button
               onClick={() => setStatus('idle')}
               className="mt-4 text-xs text-accent-600 hover:text-accent-700 font-medium transition-colors duration-200"
             >
-              Enviar otro mensaje
+              {t('contact.sendAnother')}
             </button>
           </motion.div>
         ) : (
@@ -71,7 +73,7 @@ export function ContactForm({ propertyId, sellerName }: ContactFormProps) {
           >
             <div>
               <label htmlFor="contact-name" className="block text-xs font-medium text-warm-700 mb-1.5">
-                Nombre completo
+                {t('contact.name')}
               </label>
               <input
                 id="contact-name"
@@ -79,14 +81,14 @@ export function ContactForm({ propertyId, sellerName }: ContactFormProps) {
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
                 className="w-full rounded-lg border border-warm-200 bg-white px-3.5 py-2.5 text-sm text-warm-900 outline-none focus:ring-2 focus:ring-accent-500/20 focus:border-accent-300 transition-all duration-200 placeholder:text-warm-400"
-                placeholder="Su nombre"
+                placeholder={t('contact.namePlaceholder')}
               />
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label htmlFor="contact-email" className="block text-xs font-medium text-warm-700 mb-1.5">
-                  Correo electrónico
+                  {t('contact.email')}
                 </label>
                 <input
                   id="contact-email"
@@ -100,7 +102,7 @@ export function ContactForm({ propertyId, sellerName }: ContactFormProps) {
               </div>
               <div>
                 <label htmlFor="contact-phone" className="block text-xs font-medium text-warm-700 mb-1.5">
-                  Teléfono
+                  {t('contact.phone')}
                 </label>
                 <input
                   id="contact-phone"
@@ -116,7 +118,7 @@ export function ContactForm({ propertyId, sellerName }: ContactFormProps) {
 
             <div>
               <label htmlFor="contact-message" className="block text-xs font-medium text-warm-700 mb-1.5">
-                Mensaje
+                {t('contact.message')}
               </label>
               <textarea
                 id="contact-message"
@@ -125,12 +127,12 @@ export function ContactForm({ propertyId, sellerName }: ContactFormProps) {
                 value={form.message}
                 onChange={(e) => setForm({ ...form, message: e.target.value })}
                 className="w-full rounded-lg border border-warm-200 bg-white px-3.5 py-2.5 text-sm text-warm-900 outline-none focus:ring-2 focus:ring-accent-500/20 focus:border-accent-300 transition-all duration-200 resize-none placeholder:text-warm-400"
-                placeholder="Estoy interesado en esta propiedad..."
+                placeholder={t('contact.messagePlaceholder')}
               />
             </div>
 
             {status === 'error' && (
-              <p className="text-xs text-danger-600">Hubo un error. Por favor intente de nuevo.</p>
+              <p className="text-xs text-danger-600">{t('contact.error')}</p>
             )}
 
             <button
@@ -144,15 +146,15 @@ export function ContactForm({ propertyId, sellerName }: ContactFormProps) {
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                   </svg>
-                  Enviando...
+                  {t('contact.sending')}
                 </span>
               ) : (
-                'Enviar Mensaje'
+                t('contact.send')
               )}
             </button>
 
             <p className="text-[11px] text-warm-400 text-center">
-              CasaLatina actúa como intermediario. Sus datos solo se comparten con el vendedor.
+              {t('contact.disclaimer')}
             </p>
           </motion.form>
         )}

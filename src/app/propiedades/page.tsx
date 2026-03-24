@@ -7,12 +7,14 @@ import type { Property, PropertyFilters } from '@/lib/types';
 import { PropertyCard } from '@/components/ui/PropertyCard';
 import { FilterSidebar } from '@/components/ui/FilterSidebar';
 import { PropertyCardSkeleton } from '@/components/ui/Skeleton';
+import { useI18n } from '@/lib/i18n';
 
 function PropertyListContent() {
   const searchParams = useSearchParams();
   const [properties, setProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+  const { t } = useI18n();
 
   const [filters, setFilters] = useState<PropertyFilters>(() => ({
     search: searchParams.get('search') ?? undefined,
@@ -56,9 +58,9 @@ function PropertyListContent() {
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-warm-900">Propiedades</h1>
+          <h1 className="text-2xl font-bold text-warm-900">{t('listings.title')}</h1>
           <p className="mt-1 text-sm text-warm-500">
-            {loading ? 'Buscando...' : `${properties.length} propiedades encontradas`}
+            {loading ? t('listings.searching') : `${properties.length} ${t('listings.found')}`}
           </p>
         </div>
 
@@ -78,7 +80,7 @@ function PropertyListContent() {
             <line x1="9" y1="8" x2="15" y2="8" />
             <line x1="17" y1="16" x2="23" y2="16" />
           </svg>
-          Filtros
+          {t('listings.filters')}
         </button>
       </div>
 
@@ -114,8 +116,8 @@ function PropertyListContent() {
                   <path d="M21 21l-4.35-4.35" />
                 </svg>
               </div>
-              <p className="text-base font-medium text-warm-700">No se encontraron propiedades</p>
-              <p className="mt-1 text-sm text-warm-500">Intenta ajustar los filtros de búsqueda</p>
+              <p className="text-base font-medium text-warm-700">{t('listings.noResults')}</p>
+              <p className="mt-1 text-sm text-warm-500">{t('listings.noResultsHint')}</p>
             </motion.div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">

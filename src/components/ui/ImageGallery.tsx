@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useI18n } from '@/lib/i18n';
 
 interface ImageGalleryProps {
   images: string[];
@@ -12,11 +13,11 @@ interface ImageGalleryProps {
 export function ImageGallery({ images, title }: ImageGalleryProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
+  const { t } = useI18n();
 
   return (
     <>
       <div className="space-y-3">
-        {/* Main image */}
         <div
           className="relative aspect-[16/10] rounded-xl overflow-hidden cursor-pointer group"
           onClick={() => setLightboxOpen(true)}
@@ -32,7 +33,7 @@ export function ImageGallery({ images, title }: ImageGalleryProps) {
             >
               <Image
                 src={images[activeIndex]}
-                alt={`${title} - Foto ${activeIndex + 1}`}
+                alt={`${title} - ${t('gallery.photo')} ${activeIndex + 1}`}
                 fill
                 className="object-cover"
                 sizes="(max-width: 768px) 100vw, 60vw"
@@ -46,7 +47,6 @@ export function ImageGallery({ images, title }: ImageGalleryProps) {
           </div>
         </div>
 
-        {/* Thumbnails */}
         {images.length > 1 && (
           <div className="flex gap-2 overflow-x-auto pb-1">
             {images.map((src, i) => (
@@ -59,14 +59,13 @@ export function ImageGallery({ images, title }: ImageGalleryProps) {
                     : 'opacity-60 hover:opacity-100'
                 }`}
               >
-                <Image src={src} alt={`Miniatura ${i + 1}`} fill className="object-cover" sizes="80px" />
+                <Image src={src} alt={`${t('gallery.thumbnail')} ${i + 1}`} fill className="object-cover" sizes="80px" />
               </button>
             ))}
           </div>
         )}
       </div>
 
-      {/* Lightbox */}
       <AnimatePresence>
         {lightboxOpen && (
           <motion.div
@@ -86,7 +85,6 @@ export function ImageGallery({ images, title }: ImageGalleryProps) {
               </svg>
             </button>
 
-            {/* Prev/Next */}
             {images.length > 1 && (
               <>
                 <button
@@ -125,7 +123,7 @@ export function ImageGallery({ images, title }: ImageGalleryProps) {
             >
               <Image
                 src={images[activeIndex]}
-                alt={`${title} - Foto ${activeIndex + 1}`}
+                alt={`${title} - ${t('gallery.photo')} ${activeIndex + 1}`}
                 fill
                 className="object-contain"
                 sizes="90vw"

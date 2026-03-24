@@ -3,10 +3,12 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { PROPERTY_TYPE_LABELS, DEPARTMENT_OPTIONS } from '@/lib/utils';
+import { DEPARTMENT_OPTIONS } from '@/lib/utils';
+import { useI18n } from '@/lib/i18n';
 
 export function SearchBar() {
   const router = useRouter();
+  const { t } = useI18n();
   const [search, setSearch] = useState('');
   const [type, setType] = useState('');
   const [department, setDepartment] = useState('');
@@ -20,6 +22,13 @@ export function SearchBar() {
     router.push(`/propiedades?${params.toString()}`);
   };
 
+  const typeOptions = [
+    { value: 'casa', label: t('type.casa') },
+    { value: 'terreno', label: t('type.terreno') },
+    { value: 'apartamento', label: t('type.apartamento') },
+    { value: 'finca', label: t('type.finca') },
+  ];
+
   return (
     <motion.form
       onSubmit={handleSearch}
@@ -30,7 +39,6 @@ export function SearchBar() {
     >
       <div className="bg-white rounded-2xl shadow-xl shadow-warm-900/5 border border-warm-200 p-2">
         <div className="flex flex-col sm:flex-row gap-2">
-          {/* Search input */}
           <div className="flex-1 relative">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="absolute left-3.5 top-1/2 -translate-y-1/2 text-warm-400">
               <circle cx="11" cy="11" r="8" />
@@ -40,41 +48,38 @@ export function SearchBar() {
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Buscar por ciudad, zona o palabra clave..."
+              placeholder={t('search.placeholder')}
               className="w-full rounded-xl bg-warm-50 py-3 pl-11 pr-4 text-sm text-warm-900 placeholder:text-warm-400 border-0 outline-none focus:ring-2 focus:ring-accent-500/20 focus:bg-white transition-all duration-200"
             />
           </div>
 
-          {/* Type select */}
           <select
             value={type}
             onChange={(e) => setType(e.target.value)}
             className="rounded-xl bg-warm-50 py-3 px-4 text-sm text-warm-700 border-0 outline-none focus:ring-2 focus:ring-accent-500/20 transition-all duration-200 appearance-none cursor-pointer sm:w-40"
           >
-            <option value="">Tipo</option>
-            {Object.entries(PROPERTY_TYPE_LABELS).map(([value, label]) => (
+            <option value="">{t('search.type')}</option>
+            {typeOptions.map(({ value, label }) => (
               <option key={value} value={value}>{label}</option>
             ))}
           </select>
 
-          {/* Department select */}
           <select
             value={department}
             onChange={(e) => setDepartment(e.target.value)}
             className="rounded-xl bg-warm-50 py-3 px-4 text-sm text-warm-700 border-0 outline-none focus:ring-2 focus:ring-accent-500/20 transition-all duration-200 appearance-none cursor-pointer sm:w-48"
           >
-            <option value="">Departamento</option>
+            <option value="">{t('search.department')}</option>
             {DEPARTMENT_OPTIONS.map((d) => (
               <option key={d} value={d}>{d}</option>
             ))}
           </select>
 
-          {/* Submit */}
           <button
             type="submit"
             className="rounded-xl bg-accent-600 px-6 py-3 text-sm font-medium text-white transition-all duration-200 hover:bg-accent-700 active:scale-[0.97] shrink-0"
           >
-            Buscar
+            {t('search.button')}
           </button>
         </div>
       </div>
