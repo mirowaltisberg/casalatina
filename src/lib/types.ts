@@ -9,7 +9,17 @@ export type Feature =
   | 'colonial'
   | 'isla'
   | 'rio'
-  | 'bosque';
+  | 'bosque'
+  | 'lago'
+  | 'piscina'
+  | 'jardin'
+  | 'terraza'
+  | 'garage'
+  | 'amueblado'
+  | 'seguridad'
+  | 'aire_acondicionado'
+  | 'acceso_playa'
+  | 'vista_panoramica';
 
 export type BuildingMaterial = 'concreto' | 'madera' | 'adobe' | 'mixto' | 'piedra';
 

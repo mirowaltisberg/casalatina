@@ -15,7 +15,8 @@ interface FilterSidebarProps {
   isOpen?: boolean;
 }
 
-const FEATURE_KEYS: Feature[] = ['vista_al_mar', 'playa', 'montañas', 'ciudad', 'pueblo', 'colonial', 'isla', 'rio', 'bosque'];
+const LOCATION_FEATURES: Feature[] = ['vista_al_mar', 'vista_panoramica', 'playa', 'acceso_playa', 'montañas', 'lago', 'ciudad', 'pueblo', 'colonial', 'isla', 'rio', 'bosque'];
+const AMENITY_FEATURES: Feature[] = ['piscina', 'jardin', 'terraza', 'garage', 'amueblado', 'seguridad', 'aire_acondicionado'];
 const MATERIAL_KEYS = ['concreto', 'madera', 'adobe', 'mixto', 'piedra'] as const;
 
 export function FilterSidebar({ filters, onChange, onClose, isOpen = true }: FilterSidebarProps) {
@@ -170,10 +171,34 @@ export function FilterSidebar({ filters, onChange, onClose, isOpen = true }: Fil
 
       <div>
         <label className="block text-xs font-semibold uppercase tracking-wider text-warm-400 mb-2">
-          {t('filter.features')}
+          {t('filter.location')}
         </label>
         <div className="flex flex-wrap gap-1.5">
-          {FEATURE_KEYS.map((f) => {
+          {LOCATION_FEATURES.map((f) => {
+            const featureKey = `feature.${f}` as TranslationKey;
+            return (
+              <button
+                key={f}
+                onClick={() => toggleFeature(f)}
+                className={`rounded-full px-3 py-1.5 text-xs font-medium transition-all duration-200 ${
+                  localFilters.features?.includes(f)
+                    ? 'bg-accent-600 text-white shadow-sm'
+                    : 'bg-warm-100 text-warm-600 hover:bg-warm-200'
+                }`}
+              >
+                {t(featureKey)}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      <div>
+        <label className="block text-xs font-semibold uppercase tracking-wider text-warm-400 mb-2">
+          {t('filter.amenities')}
+        </label>
+        <div className="flex flex-wrap gap-1.5">
+          {AMENITY_FEATURES.map((f) => {
             const featureKey = `feature.${f}` as TranslationKey;
             return (
               <button
